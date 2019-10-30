@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--需求：实现info error级别分类日志，按天记录-->
+<!--核心点：-->
+<!--appender，layout/encoder，pattern，rooter-->
+<configuration>
+    <!--控制台[info,)以上级别输出的配置项-->
+    <appender name="console_info" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %red(%d{yyyy-MM-dd HH:mm:ss}) %green([%thread]) %highlight(%-5level) %boldMagenta(%logger{36}.%highlight(%method:%L)) - %highlight(%msg%n)
+            </pattern>
+        </layout>
+    </appender>
+
+    <!--输出到文件配置项-->
+    <appender name="file_all" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}.%method:%-4L - %msg%n
+            </pattern>
+        </encoder>
+        <!--滚动策略，按天滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                logs/wechat-sell-%d.%i.log
+            </FileNamePattern>
+            <!--设置每个日志文件大小为100K，超过就分类-->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>16MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!--输出到文件配置项，只要info-->
+    <appender name="file_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}.%method:%-4L - %msg%n
+            </pattern>
+        </encoder>
+        <!--滚动策略，按天滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                logs/wechat-sell-INFO-%d.%i.log
+            </FileNamePattern>
+            <!--设置每个日志文件大小为100K，超过就分类-->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>8MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!--只输出error到error文件-->
+    <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}.%method:%-4L - %msg%n
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                logs/wechat-sell-ERROR-%d.%i.log
+            </FileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>8MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="console_info"></appender-ref>
+        <appender-ref ref="file_all"></appender-ref>
+        <appender-ref ref="file_info"></appender-ref>
+        <appender-ref ref="file_error"></appender-ref>
+    </root>
+</configuration>
