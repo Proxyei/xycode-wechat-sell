@@ -27,3 +27,5 @@ https://pay.weixin.qq.com/wiki/doc/api/index.html
 
 https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
 
+#### 微信模板消息
+
